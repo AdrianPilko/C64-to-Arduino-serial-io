@@ -25,6 +25,8 @@ void loop() {
   }
   if(Serial.available())
   {
-    c64Serial.write(Serial.read());
+    char serialBuffer = Serial.read();
+    c64Serial.write(serialBuffer);
+    Serial.write(serialBuffer);
   }
 }
