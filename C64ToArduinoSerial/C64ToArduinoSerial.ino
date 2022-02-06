@@ -11,22 +11,41 @@ void setup()
     // wait for serial connection to PC (over USB)
   }
 
-  Serial.println("connecting to C64...");
+  Serial.println("connecting to C64, 1200baud 8N1");
   c64Serial.begin(1200);
+  
   // Send a message on connection
-  c64Serial.println("HELLO C64 WORLD!");  
+  c64Serial.println(" ");  
+  c64Serial.println("ARDUINO TO COMMODORE 64 SERIAL");    
+  c64Serial.println("==============================");  
 }
 
-void loop() {
-  // run continously checking for data at either end and write if there is any
-  if (c64Serial.available())
+void loop() 
+{
+  while (1)
   {
-    Serial.write(c64Serial.read());
-  }
-  if(Serial.available())
-  {
-    char serialBuffer = Serial.read();
-    c64Serial.write(serialBuffer);
-    Serial.write(serialBuffer);
+    // run continously checking for data at either end and write if there is any
+    if (c64Serial.available())
+    {
+      char inputBuffer = c64Serial.read();
+      // check the contents for special characters that need convertiong from PETSCII
+      switch ((unsigned)inputBuffer)
+      {
+          case 13: inputBuffer = '\n';  break;    // this is the character code for carridge return so print a \n 
+      }
+      Serial.write(inputBuffer);
+    }
+    
+    if(Serial.available())
+    {
+      // read character into buffer so it can be echo'd to the local terminal
+      char serialBuffer = Serial.read(); 
+  
+      // write the character to the commodore 64
+      c64Serial.write(serialBuffer);
+      
+      // write the character to the USB serial connection (eg using PuTTY)
+      Serial.write(serialBuffer);
+    }
   }
 }
