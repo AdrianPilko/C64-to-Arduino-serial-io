@@ -15,9 +15,9 @@ void setup()
   c64Serial.begin(1200);
   
   // Send a message on connection
-  c64Serial.println(" ");  
+  c64Serial.println("");  
   c64Serial.println("ARDUINO TO COMMODORE 64 SERIAL");    
-  c64Serial.println("==============================");  
+  c64Serial.println("");  
 }
 
 void loop() 
@@ -31,9 +31,12 @@ void loop()
       // check the contents for special characters that need convertiong from PETSCII
       switch ((unsigned)inputBuffer)
       {
-          case 13: inputBuffer = '\n';  break;    // this is the character code for carridge return so print a \n 
+          case 13: Serial.write("\n\r"); break; // the character code for line feed and carridge return so print a \n\r
+          case 20: Serial.write("\b \b"); break; // the character code for line feed and carridge return so print a \n\r
+          default:  Serial.write(inputBuffer); // default to writing normally
+          break;    
       }
-      Serial.write(inputBuffer);
+      
     }
     
     if(Serial.available())
