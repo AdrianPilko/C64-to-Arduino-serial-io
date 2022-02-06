@@ -1,4 +1,5 @@
 #include <SoftwareSerial.h>
+#include <SoftwareSerial.h>
 
 SoftwareSerial  c64Serial(11,10);
 
@@ -15,9 +16,15 @@ void setup()
   c64Serial.begin(1200);
   
   // Send a message on connection
-  c64Serial.println("");  
-  c64Serial.println("ARDUINO TO COMMODORE 64 SERIAL");    
-  c64Serial.println("");  
+  c64Serial.write((char)147);  // control code for c64 to clear screen and place cursor at top left
+  delay(100);
+  c64Serial.write("ARDUINO ");  // tried to stop corrupting charactors by seperating writes with delays but did not improve much
+  delay(100);
+  c64Serial.write("TO COMMODORE");
+  delay(100);
+  c64Serial.write(" 64 SERIAL");
+  delay(100);
+  c64Serial.write((char)13); // put new line out to c64       
 }
 
 void loop() 
@@ -43,12 +50,19 @@ void loop()
     {
       // read character into buffer so it can be echo'd to the local terminal
       char serialBuffer = Serial.read(); 
-  
-      // write the character to the commodore 64
-      c64Serial.write(serialBuffer);
+
+      switch ((unsigned)serialBuffer)
+      {
+         case '\r' :  Serial.println(""); c64Serial.println(""); break;
+         //case '\b' :  Serial.write(""); c64Serial.write((char)20); break;
       
-      // write the character to the USB serial connection (eg using PuTTY)
-      Serial.write(serialBuffer);
+         default:
+              // write the character to the commodore 64
+              c64Serial.write(serialBuffer);        
+              // write the character to the USB serial connection (eg using PuTTY)
+              Serial.write((unsigned)serialBuffer);
+              break;         
+      }
     }
   }
 }
