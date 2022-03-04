@@ -35,7 +35,7 @@ void loop()
     if (c64Serial.available())
     {
       char inputBuffer = c64Serial.read();
-      // check the contents for special characters that need convertiong from PETSCII
+      // check the contents for special characters that need converting from PETSCII
       switch ((unsigned)inputBuffer)
       {
           case 13: Serial.write("\n\r"); break; // the character code for line feed and carridge return so print a \n\r
@@ -53,10 +53,14 @@ void loop()
 
       switch ((unsigned)serialBuffer)
       {
+         
          case '\r' :  Serial.println(""); c64Serial.println(""); break;
          //case '\b' :  Serial.write(""); c64Serial.write((char)20); break;
       
          default:
+              // convert the character to upper case, works better on c64 due to PETSCII character
+              if ((serialBuffer > 96) && (serialBuffer < 123)) serialBuffer = serialBuffer - 32;  
+             
               // write the character to the commodore 64
               c64Serial.write(serialBuffer);        
               // write the character to the USB serial connection (eg using PuTTY)
