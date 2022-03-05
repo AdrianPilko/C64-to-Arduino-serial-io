@@ -1,5 +1,4 @@
 #include <SoftwareSerial.h>
-#include <SoftwareSerial.h>
 
 SoftwareSerial  c64Serial(11,10);
 
@@ -39,7 +38,7 @@ void loop()
       switch ((unsigned)inputBuffer)
       {
           case 13: Serial.write("\n\r"); break; // the character code for line feed and carridge return so print a \n\r
-          case 20: Serial.write("\b \b"); break; // the character code for line feed and carridge return so print a \n\r
+          case 20: Serial.write("\b \b"); break; // the character code for delete
           default:  Serial.write(inputBuffer); // default to writing normally
           break;    
       }
@@ -55,8 +54,7 @@ void loop()
       {
          
          case '\r' :  Serial.println(""); c64Serial.println(""); break;
-         //case '\b' :  Serial.write(""); c64Serial.write((char)20); break;
-      
+               
          default:
               // convert the character to upper case, works better on c64 due to PETSCII character
               if ((serialBuffer > 96) && (serialBuffer < 123)) serialBuffer = serialBuffer - 32;  
