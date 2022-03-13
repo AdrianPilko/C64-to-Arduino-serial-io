@@ -2,6 +2,15 @@
 
 SoftwareSerial  c64Serial(11,10);
 
+void writeStringToC64WithDelay(String Str, int delayBetweenCharMSec)
+{
+  for (int currentCharIndex = 0; currentCharIndex < Str.length(); currentCharIndex++)
+  {
+    c64Serial.write( Str [ currentCharIndex ] );
+    delay(delayBetweenCharMSec);
+  }  
+  c64Serial.write((char)13); // put new line out to c64 
+}
 
 void setup() 
 {  
@@ -16,14 +25,9 @@ void setup()
   
   // Send a message on connection
   c64Serial.write((char)147);  // control code for c64 to clear screen and place cursor at top left
-  delay(100);
-  c64Serial.write("ARDUINO ");  // tried to stop corrupting charactors by seperating writes with delays but did not improve much
-  delay(100);
-  c64Serial.write("TO COMMODORE");
-  delay(100);
-  c64Serial.write(" 64 SERIAL");
-  delay(100);
-  c64Serial.write((char)13); // put new line out to c64       
+  writeStringToC64WithDelay("ARDUINO TO COMMODORE 64 SERIAL",2);
+  writeStringToC64WithDelay("==============================",2);
+  writeStringToC64WithDelay("CONNECT TO USB WITH 1200 8N1",2);    
 }
 
 void loop() 
